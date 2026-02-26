@@ -1,0 +1,85 @@
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>Döviz çevirici</title>
+  </head>
+  <body>
+    <div class="endis">
+      <div id="sonuc">Hangi para birimini çevirmek istiyorsunuz.</div>
+      <input type="number" id="sayi" placeholder="Lütfen sayı giriniz."><br>
+  <button onclick="kv('USD')">Dolar</button> <br>
+<button onclick="kv('EUR')">Euro</button><br>
+<button onclick="kv('GBP')">Sterlin</button><br>
+<button onclick="kv('CHF')">İsviçre Frangı</button>
+
+
+
+</div>
+      
+    
+    
+    
+  </body>
+  <script>
+    
+    let X = document.getElementById("sonuc")
+    function kv(parab){
+      let sayi = document.getElementById("sayi").value
+      if(!sayi || sayi<0){
+        sayi = 0
+      }
+      fetch(`https://api.frankfurter.app/latest?base=${parab}&symbols=TRY`)
+      .then(response => response.json())
+      .then(answer => {X.innerText = answer.rates.TRY * sayi})
+    }
+    
+    
+    
+    
+  </script>
+  
+  <style>
+    body {
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      background-color: #121417;
+    }
+    .endis{
+      box-shadow: 0px 0px 20px #DAA520;
+      border:5px #DAA520 solid;
+      height: 250px;
+      width: 300px;
+      border-radius: 5px;
+      padding-left: 10px;
+      padding-top: 10px;
+    }
+    #sonuc {
+      text-shadow: 0px 0px 5px orange;
+      color: orange;
+      margin-bottom: 5px;
+    }
+    button{
+      text-shadow: 0px 0px 2px white;
+      box-shadow: 0px 0px 5px orange;
+      background-color:#DAA520 ;
+      border:none;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+    input{ color:orange;
+      box-shadow: 0px 0px 5px darkorange;
+      height: 30px;
+      width: 96%;;
+      border: 0.5px  darkorange solid;
+      background-color: transparent;
+    }
+    
+    
+  </style>
+  
+  
+  
+  
+</html>
