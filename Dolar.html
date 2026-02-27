@@ -31,7 +31,7 @@
       }
       fetch(`https://api.frankfurter.app/latest?base=${parab}&symbols=TRY`)
       .then(response => response.json())
-      .then(answer => {X.innerText = answer.rates.TRY * sayi})
+      .then(answer => {X.innerText = answer.rates.TRY * sayi + " TL"})
     }
     
     
