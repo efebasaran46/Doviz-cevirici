@@ -1,0 +1,67 @@
+#include <Wire.h>
+#include <Adafruit_MLX90614.h>
+#include <LiquidCrystal.h>
+
+// LCD bağlantı pinleri: (RS, E, D4, D5, D6, D7)
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+
+Adafruit_MLX90614 mlx = Adafruit_MLX90614();
+
+const int led1 = 6;
+const int led2 = 7;
+const int led3 = 8;
+const int buzzer = 9;
+
+void setup() {
+  // Bluetooth 0 ve 1'e bağlı olduğu için sadece Serial.begin yeterli
+  Serial.begin(9600); 
+  Wire.begin();
+  mlx.begin();
+
+  lcd.begin(16, 2);
+  lcd.print("Sistem Hazir");
+  
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  pinMode(led3, OUTPUT);
+  pinMode(buzzer, OUTPUT);
+  
+  delay(2000); 
+}
+
+void loop() {
+  double sicaklik = mlx.readObjectTempC();
+
+  // --- TELEFONA VE SERİ PORTA VERİ GÖNDERME ---
+  // Uygulamanın veriyi yakalaması için println (satır sonu) şarttır.
+  Serial.print(sicaklik, 1); 
+  Serial.println(" C"); 
+  // --------------------------------------------
+
+  // LCD Ekran Yazdırma
+  lcd.setCursor(0, 0);
+  lcd.print("Sicaklik: ");
+  lcd.print(sicaklik, 1);
+  lcd.print(" C "); 
+
+  // Uyarı Mantığı (LED ve Buzzer)
+  if (sicaklik >= 39) {
+    digitalWrite(led1, HIGH); digitalWrite(led2, HIGH); digitalWrite(led3, HIGH);
+    tone(buzzer, 1000);
+  } 
+  else if (sicaklik >= 38) {
+    digitalWrite(led1, HIGH); digitalWrite(led2, HIGH); digitalWrite(led3, LOW);
+    tone(buzzer, 800);
+  } 
+  else if (sicaklik >= 37) {
+    digitalWrite(led1, HIGH); digitalWrite(led2, LOW); digitalWrite(led3, LOW);
+    tone(buzzer, 600);
+  } 
+  else {
+    digitalWrite(led1, LOW); digitalWrite(led2, LOW); digitalWrite(led3, LOW);
+    noTone(buzzer);
+  }
+
+  // Uygulamanın donmaması ve veritabanının yorulmaması için 1 saniye bekleme
+  delay(1000); 
+}
